@@ -3,6 +3,8 @@
 The goal of this script is to automate adding the Grim Dawn Community League exe as a non-steam game, while also providing a nice looking default steam page and icons.
 Launching GDCL using Steam is (imo) the easiest way to make use of Steam's Proton compatability options on Linux and provides a nice, customizeable UI.
 
+<img width="1271" height="559" alt="GDCL_Steam_preview" src="https://github.com/user-attachments/assets/e8e5c5af-e809-4cfd-87de-fc97754057b1" />
+
 ![Steam preview](GDCL_preview_large.png?raw=true "Steam preview")
 
 # NOTE:
