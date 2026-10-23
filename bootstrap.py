@@ -1,6 +1,7 @@
 # import sys
 import datetime
 import os
+import sys
 import webbrowser
 from pathlib import Path
 
@@ -33,7 +34,6 @@ cfg_file = script_path / "config.json"
 # data_path = Path("~/.local/share/Steam/userdata/").resolve()
 # TODO make this not stupid xdd
 data_path = script_path.parent.parent.parent.parent / "userdata"
-# print(data_path)
 
 # subdirs vs listdir
 # subdirs = [d for d in script_path.iterdir() if d.is_dir()]
@@ -71,7 +71,6 @@ elif len(users) == 0:
 # mb rename to shortcut_path or smth
 file_path = (data_path / user_id / "config").resolve()
 shortcuts_path = (file_path / "shortcuts.vdf").resolve()
-# print(file_path)
 
 
 # ----------------------
@@ -80,7 +79,6 @@ shortcuts_path = (file_path / "shortcuts.vdf").resolve()
 # Backup previous shortcuts.vdf
 if shortcuts_path.exists():
     backup_dir = script_path / "backup/"
-    # print(backup_path.resolve())
     if not (backup_dir.exists() and backup_dir.is_dir()):
         os.mkdir(backup_dir)
 
@@ -88,7 +86,6 @@ if shortcuts_path.exists():
     backup_ts = shortcuts_path.stat().st_mtime
     ts_stem = f"{shortcuts_path.stem}_{datetime.datetime.fromtimestamp(backup_ts):%d-%m-%Y-%H-%M-%S}.vdf"
     backup_path = (backup_dir / shortcuts_path.stem).with_stem(ts_stem)
-    # print(backup_path)
     if not backup_path.exists():
         shortcuts_path.copy(backup_path)
 
@@ -113,6 +110,18 @@ if shortcuts_path.exists():
 else:
     print("shortcuts.vdf not found -> new file")
     data = {'shortcuts': {}}
+
+
+shortcuts = data['shortcuts'].values()
+# print(shortcuts)
+# print("----------------------")
+
+# Check for existing GDCL shortcuts
+for s in shortcuts:
+    for v in s.values():
+        if v == GAME_NAME:
+            print("Existing GDCL shortcut found. Exiting program.")
+            sys.exit()
 
 
 # Set random appid for now just in case, to make sure format etc. stays correct.
@@ -167,18 +176,15 @@ magic_shortcut_id = (magic_id << 32) | 0x02000000
 # Copy ./art/ into the icon grid folder
 art_dir = script_path / "art"
 grid_path = file_path / "grid"
+if not (grid_path.exists() and grid_path.is_dir()):
+    os.mkdir(grid_path)
 
 # icon_path = script_path / "art/S8_logo.png"
 icon_path = grid_path / f"{magic_id}_icon.png"
 
-# print(icon_path)
-
-
 # Check that app_id in shortcuts.vdf matches the prefix of *_icon.pdf
 
-
 # Grid icons have the following naming convention:
-
 # Game background = {app_id}_hero.png
 Path(art_dir / "S8_bg.png").copy(grid_path / f"{magic_id}_hero.png")
 
@@ -196,7 +202,6 @@ Path(art_dir / "logo.json").copy(grid_path / f"{magic_id}.json")
 
 
 # Actually set vdf now
-
 # TODO: Fix icon not working (the small side panel icon)
 # TODO: Launch options from config.json
 
@@ -228,10 +233,10 @@ GDCL_shortcut = {
 # new_index = len(data['shortcuts'])
 data['shortcuts'][str(len(data['shortcuts']))] = GDCL_shortcut
 
-print("---------------")
-
-for k, v in data['shortcuts'].items():
-    print(k, v)
+# print("---------------")
+#
+# for k, v in data['shortcuts'].items():
+#     print(k, v)
 
 
 # Make sure to create the proton prefix directory
