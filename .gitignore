@@ -1,2 +1,3 @@
 .vdf
-./backup/
+backup/*
+backup/
