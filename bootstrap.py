@@ -1,9 +1,12 @@
 # import sys
 import datetime
 import os
+import webbrowser
 from pathlib import Path
 
 import vdf
+
+# TODO: Turn this into a "properly written" script
 
 # Scuffed implementation:
 # Clone/unzip repo into your Grim Dawn steam installation folder
@@ -14,19 +17,19 @@ import vdf
 # ~/.local/share/Steam/userdata/<USER_ID>/config/shortcuts.vdf
 # using the vdf module. This is required by some gaming related packages,
 # so probably fine tohave it as a dependency.
-# TODO: Handle multiple USER_IDs under userdata
 
 GAME_NAME = "Grim Dawn Community League"
 EXE_NAME = "GDCommunityLauncher.exe"
 
-# TODO CHANGE TEST NAMES
 # ----------------------
 # INIT
 # ----------------------
+
 script_path = Path.cwd()
 
 # Maybe use relative paths like
 # data_path = Path("~/.local/share/Steam/userdata/").resolve()
+# TODO make this not stupid xdd
 data_path = script_path.parent.parent.parent.parent / "userdata"
 # print(data_path)
 
@@ -109,10 +112,6 @@ else:
     print("shortcuts.vdf not found -> new file")
     data = {'shortcuts': {}}
 
-# Check if resolved paths needed
-icon_path = script_path / "art/S8_logo.png"
-# print(icon_path)
-
 
 # Set random appid for now just in case, to make sure format etc. stays correct.
 # When you first launch the game (using proton, default should be Proton Stable or Experimental)
@@ -139,15 +138,64 @@ icon_path = script_path / "art/S8_logo.png"
 magic_appid = -1906950722
 # bitwise & conversion into uint32
 magic_id = magic_appid & 0xFFFFFFFF
-print(magic_appid)
-print(magic_id)
+# print(magic_appid)
+# print(magic_id)
 
 # magic shortcut id used to launch the game using
 # steam://rungameid/magic_shortcut_id
 # is obtained using the bitshift formula:
 magic_shortcut_id = (magic_id << 32) | 0x02000000
-print(magic_shortcut_id)
+# print(magic_shortcut_id)
 
+# ----------------------
+# IMPORT ICONS
+# ----------------------
+
+# TODO:
+# Need to run game with Proton to create the prefix path + new id
+# Running the launcher creates the path but GD needs to be launched
+# from the launcher to create the settings folder.
+
+# NOTE: Could try creating a proton path and see if you can
+# attach a appid to it without chaning the id
+# NOTE: Looks like a hacky way to *maybe* solve this is to
+# use a steam generated / "valid" appid that already has a prefix
+
+
+# Copy ./art/ into the icon grid folder
+art_dir = script_path / "art"
+grid_path = file_path / "grid"
+
+# icon_path = script_path / "art/S8_logo.png"
+icon_path = grid_path / f"{magic_id}_icon.png"
+
+# print(icon_path)
+
+
+# Check that app_id in shortcuts.vdf matches the prefix of *_icon.pdf
+
+
+# Grid icons have the following naming convention:
+
+# Game background = {app_id}_hero.png
+Path(art_dir / "S8_bg.png").copy(grid_path / f"{magic_id}_hero.png")
+
+# Vertical cover = {magic_id}p.png
+Path(art_dir / "S8_cover.png").copy(grid_path / f"{magic_id}p.png")
+
+# Horizontal/wide cover = {magic_id}.png
+Path(art_dir / "S8_cover_wide.png").copy(grid_path / f"{magic_id}.png")
+
+# Logo = {magic_id}_logo.png
+Path(art_dir / "S8_logo_no_bg.png").copy(grid_path / f"{magic_id}_logo.png")
+
+# Logo scaling/orientation config
+Path(art_dir / "logo.json").copy(grid_path / f"{magic_id}.json")
+
+
+# Actually set vdf now
+
+# TODO: Fix icon not working (the small side panel icon)
 
 # Need triple/double quotes or whatever '""' for fstrings
 GDCL_shortcut = {
@@ -183,55 +231,18 @@ for k, v in data['shortcuts'].items():
     print(k, v)
 
 
+# Make sure to create the proton prefix directory
+proton_path = script_path.parent.parent.parent / "compatdata" / f"{magic_id}"
+print(proton_path)
+
+if not (proton_path.exists() & proton_path.is_dir()):
+    os.mkdir(proton_path)
+
 # Binary dump back into shortcuts.vdf:
 # Write binary as task manager
 with open(shortcuts_path, "wb") as f:
     vdf.binary_dump(data, f)
 
 
-# ----------------------
-# IMPORT ICONS
-# ----------------------
-
-# TODO:
-# Need to run game with Proton to create the prefix path + new id
-# Running the launcher creates the path but GD needs to be launched
-# from the launcher to create the settings folder.
-
-# NOTE: Could try creating a proton path and see if you can
-# attach a appid to it without chaning the id
-# NOTE: Looks like a hacky way to *maybe* solve this is to
-# use a steam generated / "valid" appid that already has a prefix
-
-
-# Copy ./art/ into the icon grid folder
-art_dir = script_path / "art"
-grid_path = file_path / "grid"
-
-# with open(shortcuts_path, "rb") as f:
-#    data_new = vdf.binary_load(f)
-
-# print(data_new)
-
-
-# data_new['shortcuts'].
-
-# Check that app_id in shortcuts.vdf matches the prefix of *_icon.pdf
-
-
-# Grid icons have the following naming convention:
-
-# # Game background = {app_id}_hero.png
-# Path(art_dir / "S8_bg.png").copy(grid_path / f"{app_id}_hero.png")
-#
-# # Vertical cover = {app_id}p.png
-# Path(art_dir / "S8_cover.png").copy(grid_path / f"{app_id}p.png")
-#
-# # Horizontal/wide cover = {app_id}.png
-# Path(art_dir / "S8_cover_wide.png").copy(grid_path / f"{app_id}.png")
-#
-# # Logo = {appid}_logo.png
-# Path(art_dir / "S8_logo_no_bg.png").copy(grid_path / f"{app_id}_logo.png")
-#
-# # Logo scaling/orientation config
-# Path(art_dir / "logo.json").copy(grid_path / f"{app_id}.json")
+GD_url = f"steam://rungameid/{magic_shortcut_id}"
+webbrowser.open(GD_url)
