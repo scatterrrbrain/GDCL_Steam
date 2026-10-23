@@ -34,6 +34,7 @@ data_path = script_path.parent.parent.parent.parent / "userdata"
 # subdirs = [d for d in script_path.iterdir() if d.is_dir()]
 # for d in subdirs:
 #     print(d)
+
 # listdir also gives files but this does not matter here
 users = os.listdir(data_path)
 # print(users)
@@ -91,6 +92,8 @@ if shortcuts_path.exists():
 # SET SHORTCUTS.VDF
 # ----------------------
 
+# TODO: Make a check here st. only add shortcut if "Grim Dawn Community Launcher" doesn't exist
+
 game_path = (script_path.parent).resolve()
 exe_path = (game_path / EXE_NAME).resolve()
 
@@ -108,7 +111,7 @@ else:
 
 # Check if resolved paths needed
 icon_path = script_path / "art/S8_logo.png"
-print(icon_path)
+# print(icon_path)
 
 
 # Set random appid for now just in case, to make sure format etc. stays correct.
@@ -120,9 +123,35 @@ print(icon_path)
 # Afaik this is just random for non-steam games,
 # so we'll just let Steam generate it and use the new one.
 
+# appid here is an int 32 (or something) ie ~ -300000000 < int < 300000000
+# -> unsigned conversion of int = appid number used for grid and proton prefix
+# ie.  -190695072 -> 2388016574
+# NOTE Try using this as a magic number for now, fix later if needed
+
+# Google says the shortcut name ie. what's used to launch steam://runappid/ and the shortcut
+# number that's the unsigned int such as 2388016574, used for icons and prefix etc.
+# are related by the formula/function:
+# https://github.com/scottrice/Ice/blob/7130b54c8d2fa7d0e2c0994ca1f2aa3fb2a27ba9/ice/steam_grid.py#L105
+
+# Looks like this works out exactly for our magic number 2388016574 -> 10256453087669518336
+# which is the correct shortcut "name". This can be verified experimentally or by checking
+# steamdir/userdata/user_id/760/screnshots.vdf (for some reason it shows up here idk lol)
+magic_appid = -1906950722
+# bitwise & conversion into uint32
+magic_id = magic_appid & 0xFFFFFFFF
+print(magic_appid)
+print(magic_id)
+
+# magic shortcut id used to launch the game using
+# steam://rungameid/magic_shortcut_id
+# is obtained using the bitshift formula:
+magic_shortcut_id = (magic_id << 32) | 0x02000000
+print(magic_shortcut_id)
+
+
 # Need triple/double quotes or whatever '""' for fstrings
 GDCL_shortcut = {
-    "appid": 67676767,
+    "appid": magic_appid,
     "AppName": GAME_NAME,
     "Exe": f'"{exe_path}"',
     "StartDir": f'"{game_path}"',
@@ -148,10 +177,10 @@ GDCL_shortcut = {
 # new_index = len(data['shortcuts'])
 data['shortcuts'][str(len(data['shortcuts']))] = GDCL_shortcut
 
-# print("---------------")
-#
-# for k, v in shortcuts.items():
-#     print(k, v)
+print("---------------")
+
+for k, v in data['shortcuts'].items():
+    print(k, v)
 
 
 # Binary dump back into shortcuts.vdf:
@@ -164,16 +193,26 @@ with open(shortcuts_path, "wb") as f:
 # IMPORT ICONS
 # ----------------------
 
-# app_id = 676767
+# TODO:
+# Need to run game with Proton to create the prefix path + new id
+# Running the launcher creates the path but GD needs to be launched
+# from the launcher to create the settings folder.
+
+# NOTE: Could try creating a proton path and see if you can
+# attach a appid to it without chaning the id
+# NOTE: Looks like a hacky way to *maybe* solve this is to
+# use a steam generated / "valid" appid that already has a prefix
+
 
 # Copy ./art/ into the icon grid folder
 art_dir = script_path / "art"
 grid_path = file_path / "grid"
 
-with open(shortcuts_path, "rb") as f:
-    data_new = vdf.binary_load(f)
+# with open(shortcuts_path, "rb") as f:
+#    data_new = vdf.binary_load(f)
 
-print(data_new)
+# print(data_new)
+
 
 # data_new['shortcuts'].
 
@@ -196,19 +235,3 @@ print(data_new)
 #
 # # Logo scaling/orientation config
 # Path(art_dir / "logo.json").copy(grid_path / f"{app_id}.json")
-
-# dict_input = vdf.binary_load(file)
-#
-# print(dict_input)
-# print(dict_input.keys())
-# #print(vdf.dumps(d))
-# #input_str = vdf.dumps(dict_input)
-# #print(input_str)
-#
-# output_str_fmt = vdf.dump(dict_input, open('./test.txt',"w"))
-# mydic = vdf.parse(open('test.txt'))
-# output_bytes = vdf.binary_dumps(input_str)
-
-# output = vdf.binary_dump(input_str, open('./test.vdf', 'wb'))
-
-# vdf.dump(file, open('test.txt', 'w'), pretty=True)
