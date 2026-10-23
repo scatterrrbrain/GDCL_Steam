@@ -27,6 +27,8 @@ EXE_NAME = "GDCommunityLauncher.exe"
 
 script_path = Path.cwd()
 
+cfg_file = script_path / "config.json"
+
 # Maybe use relative paths like
 # data_path = Path("~/.local/share/Steam/userdata/").resolve()
 # TODO make this not stupid xdd
@@ -196,6 +198,7 @@ Path(art_dir / "logo.json").copy(grid_path / f"{magic_id}.json")
 # Actually set vdf now
 
 # TODO: Fix icon not working (the small side panel icon)
+# TODO: Launch options from config.json
 
 # Need triple/double quotes or whatever '""' for fstrings
 GDCL_shortcut = {
