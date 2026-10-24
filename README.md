@@ -22,8 +22,8 @@ just in case! You should also consider backing up your proton prefixes in
 (probably not a big deal but just in case)
 
 ## Usage:
-*** Important ***
-- Make sure your Steam client is fully closed before running the script!
+
+- !! Make sure your Steam client is fully closed before running the script! !!
 
 - Clone/unzip the repo into your Grim Dawn installation folder ie. "~/.local/share/Steam/steamapps/common/Grim\ Dawn/"
 - Navigate to the GDCL_Steam directory and run the python script "bootstrap.py":
