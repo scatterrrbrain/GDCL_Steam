@@ -5,7 +5,7 @@ Launching GDCL using Steam is (imo) the easiest way to make use of Steam's Proto
 
 <img width="1271" height="559" alt="GDCL_Steam_preview" src="https://github.com/user-attachments/assets/e8e5c5af-e809-4cfd-87de-fc97754057b1" />
 
-![Steam preview](GDCL_Steam_preview_large.png?raw=true "Steam preview")
+[Steam preview](GDCL_Steam_preview_large.png?raw=true "Steam preview")
 
 # NOTE:
 - This script is still work in progress, and is such likely to break and/or do weird stuff. 
