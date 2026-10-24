@@ -30,8 +30,8 @@ just in case! You should also consider backing up your proton prefixes in
 ``` 
 $ cd ./GDCL_Steam
 $ python bootstrap.py
-
 ```
+
 - This should automatically open Steam and launch the GDCL launcher after GDCL has been added to Steam.
 This is done to make Steam initialize the Proton prefix for the GDCL launcher.
 
@@ -45,6 +45,7 @@ you can just launch the game manually from your Steam library.
 -> LOGIN to download the latest launcher updates and click play.
 -> Wait until Grim Dawn loads *ALL THE WAY UP TO THE GRIM DAWN MAIN MENU*.
 ```
+
 - After this, you can exit the game and run the "migrate_settings.py" script from the GDCL_Steam directory:
 ```
 $ python migrate_settings.py
