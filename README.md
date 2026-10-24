@@ -22,18 +22,33 @@ just in case! You should also consider backing up your proton prefixes in
 (probably not a big deal but just in case)
 
 ## Usage:
-*!! Important !!*
-- Make sure your Steam client is fully closed!!
-
+*** Important ***
+- Make sure your Steam client is fully closed before running the script!
 
 - Clone/unzip the repo into your Grim Dawn installation folder ie. "~/.local/share/Steam/steamapps/common/Grim\ Dawn/"
-- $ cd ./GDCL_Steam
-- $ python bootstrap.py
+- Navigate to the GDCL_Steam directory and run the python script "bootstrap.py":
+``` 
+$ cd ./GDCL_Steam
+$ python bootstrap.py
 
--> Should automatically open Steam and launch the GDCL-launcher. This is to initialize the Proton prefix path. 
-- If you want to migrate your base GD settings, you need to launch the game, all the way up to the Grim Dawn main menu.
+```
+- This should automatically open Steam and launch the GDCL launcher after GDCL has been added to Steam.
+This is done to make Steam initialize the Proton prefix for the GDCL launcher.
 
-- Either works or doesn't
+- NOTE: Automated Steam restart + game launch is done using [Steam Browser Protocol](https://developer.valvesoftware.com/wiki/Steam_browser_protocol). On my system "this just works", but you might get a browser popup saying to "Open a link in steam". If the automated start does not work,
+you can just launch the game manually from your Steam library.
+
+## Setting Migration (optional)
+- If you want to migrate your base GD settings over to GDCL, you need to:
+```
+-> Launch the GDCL launcher from steam at least once (the automated launch works here).
+-> LOGIN to download the latest launcher updates and click play.
+-> Wait until Grim Dawn loads *ALL THE WAY UP TO THE GRIM DAWN MAIN MENU*.
+```
+- After this, you can exit the game and run the "migrate_settings.py" script from the GDCL_Steam directory:
+```
+$ python migrate_settings.py
+```
 
 ## Please report bugs etc! :)
 - discord: scatterrr_
