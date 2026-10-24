@@ -23,7 +23,7 @@ just in case! You should also consider backing up your proton prefixes in
 
 ## Usage:
 
-- !! Make sure your Steam client is fully closed before running the script! !!
+### !! Make sure your Steam client is fully closed before running the script! !!
 
 - Clone/unzip the repo into your Grim Dawn installation folder. Default location is
 ```
