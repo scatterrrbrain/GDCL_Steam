@@ -51,5 +51,20 @@ you can just launch the game manually from your Steam library.
 $ python migrate_settings.py
 ```
 
+## Known issues
+
+- The small game icon used on Steam's Game Library panel is not being added properly using the script.
+You can fix this manually by:
+```
+-> Navigate to the Steam Game Library 'Properties' page of "Grim Dawn Community League" by right clicking
+on the sidebar icon, or clicking the wheel icon.
+
+-> On the 'Shorcuts' page, click on the empty box and choose an icon you want to use. The provided icons are
+'S8_logo_no_bg.png' and 'S8_logo.png' under GDCL_Steam/art.
+
+-> Restart Steam for the changes to take effect.
+```
+
+
 ## Please report bugs etc! :)
 - discord: scatterrr_
